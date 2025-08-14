@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>1337+Helper Emoji Icon Creator</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+    <div class="header page">
+        <h1 class="page-title"><b><i>1337+</i></b> 🎨 Emoji Icon Creator</h1>
+        <p class="subtitle creator">Search and download emojis as SVG, PNG, JPG</p>
+        <input type="text" class="search-bar" placeholder="Search emojis..." id="searchInput">
+    </div>
+
+    <div class="categories" id="categories"></div>
+
+    <div id="emojiGrid" class="emoji-grid">
+        <div class="loading">Loading emojis...</div>
+    </div>
+
+    <!-- Modal for emoji details -->
+    <div id="emojiModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div id="modalEmoji" class="emoji-display"></div>
+            <h3 id="modalName"></h3>
+            <p id="modalDescription"></p>
+            
+            <div class="download-options">
+                <button class="download-btn" id="copyTextBtn">📋 Copy Text</button>
+                <a class="download-btn" id="downloadSVG" download="emoji.svg">📄 SVG</a>
+                <a class="download-btn" id="downloadPNG" download="emoji.png">🖼️ PNG</a>
+                <a class="download-btn" id="downloadJPG" download="emoji.jpg">📷 JPG</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="create_icons.js"></script>
+</body>
+</html>
