@@ -2,6 +2,13 @@
 
 A lightweight Chrome/Edge browser extension that provides instant conversions and utilities right from your browser.
 
+## 📸 Screenshots
+
+<div align="center">
+  <img src="promo/popup.png" alt="1337+Helper Popup Interface" width="300">
+  <img src="promo/emoji.png" alt="Emoji Icon Creator" width="600">
+</div>
+
 ## 🚀 Features
 
 ### ⏰ Time Format Converter
@@ -61,7 +68,7 @@ Open source - feel free to modify and distribute
 
 ## 🔗 Links
 
-- [Our website](http://1337.plus/)
+- [Test Page, Privacy Policy, Description](https://1337.plus/record?id=bdb7660a-34c6-4390-9c18-68ef5494ece6)
 - [Report Issues](https://github.com/diviatrix/1337-Helper-chrome-extension/issues)
 
 ---
