@@ -38,14 +38,14 @@ A lightweight Chrome/Edge browser extension that provides instant conversions an
 
 1. **Click the extension icon** to open the popup
 2. **Choose your conversion**:
-   - ➡ 24-hour 🕒 - Convert page times to 24-hour format
-   - ➡ 12-hour 🕐 - Convert page times to 12-hour format
-   - ➡ Metric 📏 - Convert imperial units to metric
-   - ➡ Imperial 📐 - Convert metric units to imperial
+   - ➡ 24-hour 🕒 - Convert all times on the page to 24-hour format
+   - ➡ 12-hour 🕐 - Convert all times on the page to 12-hour format (AM/PM)
+   - ➡ Metric 📏 - Convert imperial units to metric on the page
+   - ➡ Imperial 📐 - Convert metric units to imperial on the page
 3. **Utility buttons**:
-   - 🔄 - Reload extension
-   - 🌐 - Visit 1337.plus
    - 🎨 - Open Emoji Icon Creator
+   - ↩️ - Reset/refresh the current page
+   - ℹ️ - About the extension
 
 ## 🛠️ Technical Details
 
