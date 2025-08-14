@@ -5,7 +5,7 @@ A lightweight Chrome/Edge browser extension that provides instant conversions an
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="promo/popup.png" alt="1337+Helper Popup Interface" width="300">
+  <img src="promo/popup.png" alt="1337+Helper Popup Interface" width="600">
   <img src="promo/emoji.png" alt="Emoji Icon Creator" width="600">
 </div>
 
