@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "1337+Helper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "All-in-one converter: time formats (12h/24h), units (imperial/metric), plus built-in emoji icon creator tool.",
   "permissions": ["scripting", "activeTab"],
   "action": {

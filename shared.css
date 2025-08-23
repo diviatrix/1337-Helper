@@ -89,7 +89,8 @@ h2 { font-size: 24px; margin-bottom: 15px; display: flex; align-items: center; g
 /* All Buttons */
 button, .btn, a.btn,
 .convert-btn, .mini-btn, .category-btn, 
-.action-btn, .download-btn, .test-link, .button-demo {
+.action-btn, .download-btn, .test-link, .button-demo,
+.size-select, .custom-size {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
@@ -104,7 +105,8 @@ button, .btn, a.btn,
 button:hover, .btn:hover, a.btn:hover,
 .convert-btn:hover, .mini-btn:hover, .category-btn:hover,
 .action-btn:hover, .download-btn:hover, .test-link:hover,
-.button-demo:hover, .emoji-card:hover {
+.button-demo:hover, .emoji-card:hover,
+.size-select:hover, .custom-size:hover {
   background: var(--secondary);
   border-color: var(--primary);
 }
@@ -167,6 +169,10 @@ button:hover, .btn:hover, a.btn:hover,
   z-index: 1000;
 }
 
+.modal.visible {
+  display: block;
+}
+
 .modal-content {
   position: absolute;
   top: 50%;
@@ -193,6 +199,31 @@ button:hover, .btn:hover, a.btn:hover,
   cursor: pointer;
 }
 
+/* Size selection */
+.size-selection {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.size-select, .custom-size {
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.custom-size {
+  margin-top: 5px;
+}
+
+.custom-size.hidden {
+  display: none;
+}
+
 /* Utils */
 .loading { text-align: center; font-size: 18px; padding: 50px; color: var(--muted); }
 .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
@@ -202,3 +233,36 @@ button:hover, .btn:hover, a.btn:hover,
 a { color: var(--primary); text-decoration: none; }
 a:hover { color: var(--hover); text-decoration: underline; }
 ol { line-height: 1.8; padding-left: 20px; }
+
+/* Collapsible sections for about.html */
+.section-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header::after {
+    content: "▼";
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.section-header.collapsed::after {
+    transform: rotate(-90deg);
+}
+
+.section-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.section-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+.section-content.expanded {
+    max-height: 2000px;
+    opacity: 1;
+}

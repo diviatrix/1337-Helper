@@ -136,7 +136,7 @@ function handleActionClick(e) {
         const group = e.target.dataset.group;
         openModal(emoji, name, group);
     } else if (action === 'copy') {
-        copyToClipboard(emoji);
+        copyToClipboard(emoji, e.target);
     }
 }
 
@@ -197,45 +197,120 @@ function openModal(emoji, name, group) {
     // Generate download links
     generateDownloadLinks(emoji, name);
     
-    document.getElementById('emojiModal').style.display = 'block';
+    document.getElementById('emojiModal').classList.add('visible');
 }
 
 function closeModal() {
-    document.getElementById('emojiModal').style.display = 'none';
+    document.getElementById('emojiModal').classList.remove('visible');
+}
+
+// Function to convert canvas to ICO format
+function canvasToIco(canvas, size) {
+    // ICO format specification
+    // Header: 6 bytes
+    // Icon Directory Entry: 16 bytes per image
+    // Image data: varies
+    
+    const header = new ArrayBuffer(6);
+    const headerView = new DataView(header);
+    headerView.setUint16(0, 0, true); // Reserved
+    headerView.setUint16(2, 1, true); // Icon type
+    headerView.setUint16(4, 1, true); // Number of images
+    
+    const entry = new ArrayBuffer(16);
+    const entryView = new DataView(entry);
+    entryView.setUint8(0, size); // Width
+    entryView.setUint8(1, size); // Height
+    entryView.setUint8(2, 0); // Color palette
+    entryView.setUint8(3, 0); // Reserved
+    entryView.setUint16(4, 1, true); // Color planes
+    entryView.setUint16(6, 32, true); // Bits per pixel
+    entryView.setUint32(8, 0, true); // Image size (will be updated)
+    entryView.setUint32(12, 22, true); // Offset to image data
+    
+    // Convert canvas to PNG data
+    const pngDataUrl = canvas.toDataURL('image/png');
+    const base64Data = pngDataUrl.split(',')[1];
+    const binaryString = atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    
+    // Update image size in entry
+    entryView.setUint32(8, bytes.length, true);
+    
+    // Combine all parts
+    const totalSize = header.byteLength + entry.byteLength + bytes.length;
+    const buffer = new ArrayBuffer(totalSize);
+    const view = new Uint8Array(buffer);
+    
+    // Copy header
+    view.set(new Uint8Array(header), 0);
+    // Copy entry
+    view.set(new Uint8Array(entry), header.byteLength);
+    // Copy image data
+    view.set(bytes, header.byteLength + entry.byteLength);
+    
+    // Convert to data URL
+    let binary = '';
+    const bytesView = new Uint8Array(buffer);
+    for (let i = 0; i < bytesView.length; i++) {
+        binary += String.fromCharCode(bytesView[i]);
+    }
+    return 'data:image/x-icon;base64,' + btoa(binary);
 }
 
 function generateDownloadLinks(emoji, name) {
+    // Get selected size
+    const sizeSelect = document.getElementById('sizeSelect');
+    const customSizeInput = document.getElementById('customSize');
+    let size = 64; // default
+    
+    if (sizeSelect.value === 'custom') {
+        size = parseInt(customSizeInput.value) || 64;
+        // Clamp size between 16 and 512
+        size = Math.max(16, Math.min(512, size));
+    } else {
+        size = parseInt(sizeSelect.value);
+    }
+    
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 128;
-    canvas.height = 128;
+    canvas.width = size;
+    canvas.height = size;
 
     // Create emoji on canvas with better font support
-    ctx.font = '100px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+    ctx.font = `${size * 0.8}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(emoji, 64, 64);
+    ctx.fillText(emoji, size/2, size/2);
 
     // PNG download
     const pngDataUrl = canvas.toDataURL('image/png');
     document.getElementById('downloadPNG').href = pngDataUrl;
-    document.getElementById('downloadPNG').download = `${name.replace(/\s+/g, '_')}.png`;
+    document.getElementById('downloadPNG').download = `${name.replace(/\s+/g, '_')}_${size}x${size}.png`;
 
     // JPG download
     const jpgDataUrl = canvas.toDataURL('image/jpeg');
     document.getElementById('downloadJPG').href = jpgDataUrl;
-    document.getElementById('downloadJPG').download = `${name.replace(/\s+/g, '_')}.jpg`;
+    document.getElementById('downloadJPG').download = `${name.replace(/\s+/g, '_')}_${size}x${size}.jpg`;
+
+    // ICO download
+    const icoDataUrl = canvasToIco(canvas, size);
+    document.getElementById('downloadICO').href = icoDataUrl;
+    document.getElementById('downloadICO').download = `${name.replace(/\s+/g, '_')}_${size}x${size}.ico`;
 
     // SVG download
     const svgContent = `
-        <svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
-            <text x="64" y="64" font-family="serif" font-size="100" text-anchor="middle" dominant-baseline="central">${emoji}</text>
+        <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+            <text x="${size/2}" y="${size/2}" font-family="serif" font-size="${size * 0.8}" text-anchor="middle" dominant-baseline="central">${emoji}</text>
         </svg>
     `;
     const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
     const svgUrl = URL.createObjectURL(svgBlob);
     document.getElementById('downloadSVG').href = svgUrl;
-    document.getElementById('downloadSVG').download = `${name.replace(/\s+/g, '_')}.svg`;
+    document.getElementById('downloadSVG').download = `${name.replace(/\s+/g, '_')}_${size}x${size}.svg`;
 }
 
 function copyText() {
@@ -244,13 +319,15 @@ function copyText() {
     });
 }
 
-function copyToClipboard(text) {
+function copyToClipboard(text, element) {
     navigator.clipboard.writeText(text).then(() => {
         // Visual feedback
-        event.target.textContent = '✅ Copied!';
-        setTimeout(() => {
-            event.target.textContent = 'Copy';
-        }, 1000);
+        if (element) {
+            element.textContent = '✅ Copied!';
+            setTimeout(() => {
+                element.textContent = 'Copy';
+            }, 1000);
+        }
     });
 }
 
@@ -282,6 +359,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (copyBtn) {
         copyBtn.addEventListener('click', copyText);
     }
+    
+    // Size selection events
+    const sizeSelect = document.getElementById('sizeSelect');
+    const customSizeInput = document.getElementById('customSize');
+    
+    // Hide custom size input by default
+    customSizeInput.classList.add('hidden');
+    
+    sizeSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+            customSizeInput.classList.remove('hidden');
+        } else {
+            customSizeInput.classList.add('hidden');
+        }
+        
+        // Regenerate download links with new size
+        if (currentEmoji) {
+            generateDownloadLinks(currentEmoji.emoji, currentEmoji.name);
+        }
+    });
+    
+    customSizeInput.addEventListener('input', function() {
+        // Regenerate download links with new size
+        if (currentEmoji) {
+            generateDownloadLinks(currentEmoji.emoji, currentEmoji.name);
+        }
+    });
 
     // Load emojis on page load
     loadEmojis();
